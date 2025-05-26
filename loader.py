@@ -20,7 +20,7 @@ import os;
 import ctypes;
 
 # /* define path */
-dll_path           = os.path.abspath("main.dll");
+dll_path           = os.path.abspath("libraries/main.dll");
 
 # /* load dll into mem, fetch main() - define args & allow returning */
 game               = ctypes.WinDLL(dll_path);

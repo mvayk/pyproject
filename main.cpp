@@ -5,7 +5,7 @@
 #include <iostream>
 
 extern __declspec(dllexport) int main() {
-    printf("successful");
+    printf("success");
 
     return 0;
 }
