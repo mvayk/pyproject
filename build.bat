@@ -1,0 +1,1 @@
+g++ -m64 -shared -o main.dll main.cpp -static-libgcc -static-libstdc++
