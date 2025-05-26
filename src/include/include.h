@@ -1,0 +1,1 @@
+constexpr void voId(void);
