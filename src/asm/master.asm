@@ -1,7 +1,20 @@
-section .text
-    global asm_main
+; mvayк
+; mvayк
+; mvayк
 
-; move 1 into eax register & return
+extern printf
+global asm_main
+
+section .data
+    fmt db "pce", 10, 0 ; 10 is null terminator
+
+section .text
 asm_main:
-    mov eax, 1
+    sub rsp, 40
+
+    lea rcx, [rel fmt] ; rcx is * to string - printf
+    call printf
+
+    xor eax, eax ; return 0;
+    add rsp, 40 ; realigns the stack
     ret

@@ -18,6 +18,10 @@
 # /* imports */
 import os;
 import ctypes;
+import platform;
+
+# /* platform check - make sure is 64bit */
+print(platform.architecture());
 
 # /* define path */
 dll_path           = os.path.abspath("libraries/main.dll");

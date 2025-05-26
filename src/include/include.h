@@ -1,1 +1,1 @@
-constexpr void voId(void);
+constexpr void void_void(void);
