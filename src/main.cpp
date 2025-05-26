@@ -2,6 +2,10 @@
 /* mvayк */
 /* mvayк */
 
+//
+// TODO: move opengl window stuff into its namespace
+//
+
 #include <iostream>
 #include <cstdint>
 
@@ -54,8 +58,8 @@ extern "C" __declspec(dllexport) int WINAPI main(HINSTANCE hInstance, HINSTANCE,
     MSG message = {};
     BOOL running{true};
 
+    /* main loop */
     while (running == true && running != false) {
-        /* windows dispatch ptsd */
         while (PeekMessage(&message, nullptr, 0, 0, PM_REMOVE)) {
             if (message.message == WM_QUIT) {
                 running = false;
