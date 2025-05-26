@@ -4,7 +4,10 @@
 
 #include <iostream>
 #include <cstdint>
+
 #include "include/include.h"
+#include "include/GL/gl.h"
+#include "include/GL/glu.h"
 
 /* integrate master.asm */
 extern "C" int asm_main();

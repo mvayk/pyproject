@@ -3,7 +3,8 @@
 ; mvayк
 
 ; register order:
-; rcx rdx r8 r9
+; rcx rdx r8 r9 -> stack
+; rax is return value
 
 extern printf
 extern MessageBoxA
