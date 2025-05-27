@@ -1,6 +1,3 @@
-/* random file that will contains functions that are not cool enough to be
-   allow in main */
-
 #pragma once
 
 #include <iostream>

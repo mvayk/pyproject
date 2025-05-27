@@ -39,7 +39,7 @@ asm_main:
     mov rdx, rax
     call printf
 
-    xor eax, eax ; return 0;
+    xor eax, 1 ; return 0;
     add rsp, 40 ; realigns the stack
     ret
 
