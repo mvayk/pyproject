@@ -28,7 +28,7 @@
 extern "C" int asm_main();
 
 /* C main function - gets exported for ctypes */
-extern "C" __declspec(dllexport) int main(void) {
+__declspec(dllexport) int main() {
     int asm_r = asm_main();
 
     /* initialize glfw */
