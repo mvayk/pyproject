@@ -4,13 +4,15 @@
 #include <stdio.h>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
-//
-// TODO: later
-//
-
-typedef struct {
-} object;
+#include "render.h"
 
 namespace objects {
+    vertex floor[] = {
+        {{-5.0f, 0.0f, -5.0f}, {0.3f, 0.7f, 0.3f}},
+        {{ 5.0f, 0.0f, -5.0f}, {0.3f, 0.7f, 0.3f}},
+        {{ 5.0f, 0.0f,  5.0f}, {0.3f, 0.7f, 0.3f}},
+        {{ 5.0f, 0.0f,  5.0f}, {0.3f, 0.7f, 0.3f}},
+        {{-5.0f, 0.0f,  5.0f}, {0.3f, 0.7f, 0.3f}},
+        {{-5.0f, 0.0f, -5.0f}, {0.3f, 0.7f, 0.3f}},
+    };
 }
