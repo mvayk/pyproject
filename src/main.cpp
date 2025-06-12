@@ -12,12 +12,15 @@
 #include "engine/utils.h"
 #include "engine/shader/shader.h"
 #include "engine/game/entity.h"
+#include "engine/render/object.h"
+#include "engine/render/render.h"
+#include "engine/render/camera.h"
 
 /* opengl glfw glad */
 #define GLFW_INCLUDE_NONE
 #include "include/glad/glad.h"
 #include "include/GLFW/glfw3.h"
-#include "include/shader.h"
+#include "engine/shader/vert_frag.h"
 
 /* glm */
 #include "include/glm/glm.hpp"
@@ -33,6 +36,10 @@ extern "C" int asm_main();
 /* C main function - gets exported for ctypes */
 __declspec(dllexport) int main() {
     int asm_r = asm_main();
+    if (asm_r == 1) {
+        printf("asm failed...");
+        occur_fatal();
+    }
 
     /* initialize glfw */
     glfwInit();
@@ -49,73 +56,30 @@ __declspec(dllexport) int main() {
 
     /* viewport */
     glViewport(0, 0, 800, 600);
-
     glEnable(GL_DEPTH_TEST);
 
-    float floorVertices[] = {
-    -5.0f, 0.0f, -5.0f,   0.3f, 0.7f, 0.3f,
-     5.0f, 0.0f, -5.0f,   0.3f, 0.7f, 0.3f,
-     5.0f, 0.0f,  5.0f,   0.3f, 0.7f, 0.3f,
+    /* viewport */
+    Object floor = create_floor();
+    Shader floor_shader(shaders::vertex_shader, shaders::fragment_shader);
 
-     5.0f, 0.0f,  5.0f,   0.3f, 0.7f, 0.3f,
-    -5.0f, 0.0f,  5.0f,   0.3f, 0.7f, 0.3f,
-    -5.0f, 0.0f, -5.0f,   0.3f, 0.7f, 0.3f
-    };
-
-
-    /* refactor later */
-    unsigned int floorVAO, floorVBO;
-    glGenVertexArrays(1, &floorVAO);
-    glGenBuffers(1, &floorVBO);
-
-    glBindVertexArray(floorVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, floorVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(floorVertices), floorVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0);
-
-    Shader floorShader(shaders::vertex_shader, shaders::fragment_shader);
-
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f/600.f, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 4.0f, 6.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 model = glm::mat4(1.0f);
-
-    /* declare player struct */
-    Player player;
-    player.name = "ben";
-    player.health = 100;
-    player.skin_color = "white";
-
-    printf("%d/n", player.self.id);
-
-    Monster monster;
-    monster.health = 100;
+    /* initialize the camera */
+    Camera camera;
 
     while (!glfwWindowShouldClose(g_window)) {
-        printf("5");
         glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        floorShader.use();
-        floorShader.setMat4("projection", projection);
-        floorShader.setMat4("view", view);
-        floorShader.setMat4("model", model);
+        camera.projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
+        camera.view = glm::lookAt(glm::vec3(0.0f, 4.0f, 6.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        camera.model = glm::mat4(1.0f);
 
-        glBindVertexArray(floorVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
+        draw_object(floor, floor_shader, camera.projection, camera.view, camera.model);
 
         glfwPollEvents();
         glfwSwapBuffers(g_window);
     }
 
+    destroy_object(floor);
     glfwDestroyWindow(g_window);
     glfwTerminate();
 
