@@ -15,4 +15,9 @@ typedef struct {
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
+    glm::vec3 position;
+    glm::vec3 front;
+    glm::vec3 up;
+
+    float speed;
 }Camera;

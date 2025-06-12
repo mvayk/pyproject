@@ -8,7 +8,7 @@ typedef int ID;
 
 typedef struct {
     unsigned int id;
-    int x, y, z;
+    float x, y, z;
 }Entity;
 
 typedef struct {
@@ -24,8 +24,4 @@ typedef struct {
 
     int health;
     int attack_damage;
-    
-    int damage(int amount, ID entity) {
-        health = health - amount;
-    }
 }Monster;
