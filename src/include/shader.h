@@ -5,11 +5,11 @@
 #include "glad/glad.h"
 #include "glm/glm.hpp"
 
+#include <stdio.h>
 #include <string>
 #include <iostream>
 
-class Shader
-{
+class Shader {
 public:
     unsigned int ID;
 

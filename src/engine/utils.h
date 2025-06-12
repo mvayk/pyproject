@@ -2,8 +2,9 @@
 #define GLFW_INCLUDE_NONE
 
 #include <stdio.h>
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include "../include/glad/glad.h"
+#include "../include/GLFW/glfw3.h"
+#include <cstdio>
 
 #define NL "\n"
 #define LOG_ERROR(...) fprintf(stderr, "[-] " __VA_ARGS__); fprintf(stderr, NL)

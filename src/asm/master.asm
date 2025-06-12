@@ -31,7 +31,7 @@ asm_main:
     mov r9d, 0              ; type
     call MessageBoxA
 
-    mov rcx, 5
+    mov rcx, 10
     mov rdx, 100
     call add
 
