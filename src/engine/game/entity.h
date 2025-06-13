@@ -17,6 +17,7 @@ typedef struct {
     char *name;
     int health;
     char *skin_color;
+    float speed;
 }Player;
 
 typedef struct {

@@ -33,6 +33,42 @@
 /* integrate master.asm */
 extern "C" int asm_main();
 
+/* global scope because */
+Camera camera;
+
+bool first_timer = true;
+float last_x = 400.0f;
+float last_y = 300.0f;
+
+void callback(GLFWwindow* window, double xpos, double ypos) {
+    if (first_timer == true) {
+        last_x = xpos;
+        last_y = ypos;
+        first_timer = false;
+    }
+
+    float xoffset = xpos - last_x;
+    float yoffset = last_y - ypos;
+
+    last_x = xpos;
+    last_y = ypos;
+
+    xoffset *= camera.sensitivity;
+    yoffset *= camera.sensitivity;
+
+    camera.yaw += xoffset;
+    camera.pitch += yoffset;
+
+    if (camera.pitch > 89.0f) camera.pitch = 89.0f;
+    if (camera.pitch > -89.0f) camera.pitch = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+    direction.y = sin(glm::radians(camera.pitch));
+    direction.z = sin(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
+    camera.front = glm::normalize(direction);
+}
+
 __declspec(dllexport) int main() {
     /* call asm */
     if (asm_main() == 1) {
@@ -55,17 +91,28 @@ __declspec(dllexport) int main() {
     Shader floor_shader(shaders::vertex_shader, shaders::fragment_shader);
 
     /* camera */
-    Camera camera;
-    camera.position  = glm::vec3(0.0f, 4.0f, 6.0f);
-    camera.front     = glm::vec3(0.0f, -0.5f, -1.0f);
-    camera.up        = glm::vec3(0.0f, 1.0f, 0.0f);
-    camera.model     = glm::mat4(1.0f);
+    camera.position   = glm::vec3(0.0f, 4.0f, 6.0f);
+    camera.front      = glm::vec3(0.0f, -0.5f, -1.0f);
+    camera.up         = glm::vec3(0.0f, 1.0f, 0.0f);
+    camera.model      = glm::mat4(1.0f);
     camera.projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
+
+    /* mouse */
+    glfwSetInputMode(g_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(g_window, callback);
 
     /* timing */
     float delta_time = 0.0f;
     float last_frame = 0.0f;
-    const float base_speed = 5.0f;
+
+    /* intialize entities and the player */
+    Entity entity; /* will init later */
+
+    Player player;
+    player.name = "ben";
+    player.health = 100;
+    player.skin_color = "ireland";
+    player.speed = 5.0f;
 
     /* main loop */
     while (!glfwWindowShouldClose(g_window)) {
@@ -74,17 +121,17 @@ __declspec(dllexport) int main() {
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
 
-        float speed = base_speed * delta_time;
+        player.speed = player.speed * delta_time;
 
         /* movement */
         if (glfwGetKey(g_window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.position += speed * camera.front;
+            camera.position += player.speed * camera.front;
         if (glfwGetKey(g_window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.position -= speed * camera.front;
+            camera.position -= player.speed * camera.front;
         if (glfwGetKey(g_window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * speed;
+            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * player.speed;
         if (glfwGetKey(g_window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * speed;
+            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * player.speed;
 
         /* update view */
         camera.view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);

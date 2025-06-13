@@ -15,9 +15,13 @@ typedef struct {
     glm::mat4 projection;
     glm::mat4 view;
     glm::mat4 model;
+
     glm::vec3 position;
     glm::vec3 front;
     glm::vec3 up;
 
-    float speed;
+    float yaw = -90.0f;
+    float pitch = 0.0f;
+
+    float sensitivity = 0.1f;
 }Camera;
