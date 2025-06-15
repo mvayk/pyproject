@@ -4,21 +4,27 @@
 
 #include "../utils.h"
 
-typedef int ID;
+typedef unsigned int ID;
 
 typedef struct {
-    unsigned int id;
-    float x, y, z;
+    ID id;
+    float height_clamp;
 }Entity;
 
-typedef struct {
-    Entity self;
+extern "C" {
+    typedef struct {
+        int fov; /* goes first because im too lazy to define in asm */
 
-    char *name;
-    int health;
-    char *skin_color;
-    float speed;
-}Player;
+        Entity self;
+
+        char *name;
+        int health;
+        char *skin_color;
+        float speed;
+    }Player;
+
+    Player player;
+}
 
 typedef struct {
     Entity self;

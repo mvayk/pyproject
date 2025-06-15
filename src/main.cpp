@@ -31,7 +31,7 @@
 #define GLM_FORCE_RADIANS
 
 /* integrate master.asm */
-extern "C" int asm_main();
+#include "asm/asm_globals.h"
 
 /* global scope because */
 Camera camera;
@@ -60,7 +60,7 @@ void callback(GLFWwindow* window, double xpos, double ypos) {
     camera.pitch += yoffset;
 
     if (camera.pitch > 89.0f) camera.pitch = 89.0f;
-    if (camera.pitch > -89.0f) camera.pitch = -89.0f;
+    if (camera.pitch < -89.0f) camera.pitch = -89.0f;
 
     glm::vec3 direction;
     direction.x = cos(glm::radians(camera.yaw)) * cos(glm::radians(camera.pitch));
@@ -75,6 +75,9 @@ __declspec(dllexport) int main() {
         printf("asm failed...");
         occur_fatal();
     }
+
+    /* huh */
+    rape_the_vad_exclamation_mark();
 
     /* initialize glfw */
     glfwInit();
@@ -105,14 +108,14 @@ __declspec(dllexport) int main() {
     float delta_time = 0.0f;
     float last_frame = 0.0f;
 
-    /* intialize entities and the player */
-    Entity entity; /* will init later */
-
-    Player player;
+    /* entities */
+    player.self.height_clamp = 1.6f;
     player.name = "ben";
     player.health = 100;
-    player.skin_color = "ireland";
+    player.skin_color = "pale";
     player.speed = 5.0f;
+    set_fov();
+    printf("%d\n", player.fov);
 
     /* main loop */
     while (!glfwWindowShouldClose(g_window)) {
@@ -121,20 +124,20 @@ __declspec(dllexport) int main() {
         delta_time = current_frame - last_frame;
         last_frame = current_frame;
 
-        player.speed = player.speed * delta_time;
-
-        /* movement */
-        if (glfwGetKey(g_window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.position += player.speed * camera.front;
-        if (glfwGetKey(g_window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.position -= player.speed * camera.front;
-        if (glfwGetKey(g_window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * player.speed;
-        if (glfwGetKey(g_window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * player.speed;
+        float frame_speed = player.speed * delta_time;
 
         /* update view */
         camera.view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+
+        /* movement */
+        if (glfwGetKey(g_window, GLFW_KEY_W) == GLFW_PRESS)
+            camera.position += frame_speed * camera.front;
+        if (glfwGetKey(g_window, GLFW_KEY_S) == GLFW_PRESS)
+            camera.position -= frame_speed * camera.front;
+        if (glfwGetKey(g_window, GLFW_KEY_A) == GLFW_PRESS)
+            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
+        if (glfwGetKey(g_window, GLFW_KEY_D) == GLFW_PRESS)
+            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
 
         /* render */
         glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
@@ -146,6 +149,7 @@ __declspec(dllexport) int main() {
         glfwSwapBuffers(g_window);
     }
 
+    end_vad_abuse();
     destroy_object(floor);
     glfwDestroyWindow(g_window);
     glfwTerminate();
