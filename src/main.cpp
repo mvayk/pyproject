@@ -76,9 +76,6 @@ __declspec(dllexport) int main() {
         occur_fatal();
     }
 
-    /* huh */
-    rape_the_vad_exclamation_mark();
-
     /* initialize glfw */
     glfwInit();
     GLFWwindow* g_window = glfwCreateWindow(800, 600, "game", NULL, NULL);
@@ -116,6 +113,9 @@ __declspec(dllexport) int main() {
     player.speed = 5.0f;
     set_fov();
     printf("%d\n", player.fov);
+
+    /* huh */
+    rape_the_vad_exclamation_mark();
 
     /* main loop */
     while (!glfwWindowShouldClose(g_window)) {
