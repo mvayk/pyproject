@@ -12,15 +12,16 @@
 #include "engine/utils.h"
 #include "engine/shader/shader.h"
 #include "engine/game/entity.h"
+#include "engine/game/map.h"
 #include "engine/render/object.h"
 #include "engine/render/render.h"
 #include "engine/render/camera.h"
+//#include "engine/shader/vert_frag.h"
 
 /* opengl glfw glad */
 #define GLFW_INCLUDE_NONE
 #include "include/glad/glad.h"
 #include "include/GLFW/glfw3.h"
-#include "engine/shader/vert_frag.h"
 
 /* glm */
 #include "include/glm/glm.hpp"
@@ -76,26 +77,26 @@ __declspec(dllexport) int main() {
         occur_fatal();
     }
 
+    /* city of agartha */ 
+    const int window_x = 800;
+    const int window_y = 600;
+
     /* initialize glfw */
     glfwInit();
-    GLFWwindow* g_window = glfwCreateWindow(800, 600, "game", NULL, NULL);
+    GLFWwindow* g_window = glfwCreateWindow(window_x, window_y, "Damien's Doom", NULL, NULL);
     if (!g_window) { LOG_FATAL("Failed to create g_window - exiting"); occur_fatal(); }
 
     glfwMakeContextCurrent(g_window);
     gladLoadGL();
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, window_x, window_y);
     glEnable(GL_DEPTH_TEST);
 
     /* create floor */
     Object floor = create_floor();
     Shader floor_shader(shaders::vertex_shader, shaders::fragment_shader);
 
-    /* camera */
-    camera.position   = glm::vec3(0.0f, 4.0f, 6.0f);
-    camera.front      = glm::vec3(0.0f, -0.5f, -1.0f);
-    camera.up         = glm::vec3(0.0f, 1.0f, 0.0f);
-    camera.model      = glm::mat4(1.0f);
-    camera.projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
+    /* 我为什么换到了 Tab 缩进 --sxyazi */
+    level::load(GODS_PLAN);
 
     /* mouse */
     glfwSetInputMode(g_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -106,16 +107,24 @@ __declspec(dllexport) int main() {
     float last_frame = 0.0f;
 
     /* entities */
-    player.self.height_clamp = 1.6f;
+    const float height_clamp = 1.6f;
+
+    player.self.height_clamp = height_clamp;
     player.name = "ben";
     player.health = 100;
     player.skin_color = "pale";
     player.speed = 5.0f;
-    set_fov();
-    printf("%d\n", player.fov);
+    set_fov(); player.fov = (float)player.fov;
+
+    /* camera */
+    camera.position   = glm::vec3(0.0f, 4.0f, 6.0f);
+    camera.front      = glm::vec3(0.0f, -0.5f, -1.0f);
+    camera.up         = glm::vec3(0.0f, 1.0f, 0.0f);
+    camera.model      = glm::mat4(1.0f);
+    camera.projection = glm::perspective(glm::radians(120.0f), 800.f / 600.f, 0.1f, 100.0f);
 
     /* huh */
-    rape_the_vad_exclamation_mark();
+    //rape_the_vad_exclamation_mark();
 
     /* main loop */
     while (!glfwWindowShouldClose(g_window)) {
@@ -139,16 +148,20 @@ __declspec(dllexport) int main() {
         if (glfwGetKey(g_window, GLFW_KEY_D) == GLFW_PRESS)
             camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
 
+        camera.position.y = player.self.height_clamp;
+
         /* render */
-        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+        glClearColor(0.2f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         draw_object(floor, floor_shader, camera.projection, camera.view, camera.model);
+        level::render_active(camera.projection, camera.view, camera.model);
 
         glfwPollEvents();
         glfwSwapBuffers(g_window);
     }
 
+    level::wipetheslatecleandude();
     end_vad_abuse();
     destroy_object(floor);
     glfwDestroyWindow(g_window);

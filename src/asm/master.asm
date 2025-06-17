@@ -39,7 +39,7 @@ section .data
     msg db "Damien's Doom has loaded", 0
 
     ; vad raper 50% off
-    size dq 5368709120
+    size dq 5368709120 * 4
     alloc_flags dq 0x3000
     page_size dq 4096
     protect dq 0x40
