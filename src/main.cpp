@@ -13,6 +13,7 @@
 #include "engine/shader/shader.h"
 #include "engine/game/entity.h"
 #include "engine/game/map.h"
+#include "engine/game/collision.h"
 #include "engine/render/object.h"
 #include "engine/render/render.h"
 #include "engine/render/camera.h"
@@ -139,16 +140,27 @@ __declspec(dllexport) int main() {
         camera.view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 
         /* movement */
+        glm::vec3 future_camera = camera.position;
+
         if (glfwGetKey(g_window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.position += frame_speed * camera.front;
+            future_camera += frame_speed * camera.front;
         if (glfwGetKey(g_window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.position -= frame_speed * camera.front;
+            future_camera -= frame_speed * camera.front;
         if (glfwGetKey(g_window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.position -= glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
+            future_camera = glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
         if (glfwGetKey(g_window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.position += glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
+            future_camera += glm::normalize(glm::cross(camera.front, camera.up)) * frame_speed;
 
         camera.position.y = player.self.height_clamp;
+
+        /* i dont efven know */
+        //
+        // TODO: later
+        //
+        bool truely_collided = false;
+        for (const auto& [obj, _unused] : level::active_objects) {
+            //if (collided(future_camera, ))
+        }
 
         /* render */
         glClearColor(0.2f, 0.0f, 0.0f, 1.0f);
